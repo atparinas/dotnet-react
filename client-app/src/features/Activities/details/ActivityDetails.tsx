@@ -1,15 +1,17 @@
 import React from 'react';
 import { Button, Card, Image } from 'semantic-ui-react';
 import { Activity } from '../../../models/activity';
-
-interface Props {
-    activity: Activity,
-    cancelSelectedActivity: () => void,
-    openForm: (id: string) => void
-}
+import { useStore } from '../../../stores/store';
 
 
-const ActivtyDetails : React.FC<Props> = ({activity, cancelSelectedActivity, openForm}) => {
+const ActivtyDetails : React.FC  = () => {
+
+    const {activityStore} = useStore();
+
+    const {selectedActivity: activity, openForm, cancelSelectedActivity} = activityStore;
+
+
+    if(!activity) return <h2>No Data</h2> ;
 
     return (
         <Card fluid >

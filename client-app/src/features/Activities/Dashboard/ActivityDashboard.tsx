@@ -1,37 +1,34 @@
-import React from 'react';
-import { Grid, List } from 'semantic-ui-react';
+import { observer } from 'mobx-react-lite';
+import React, { useEffect } from 'react';
+import { Grid } from 'semantic-ui-react';
+import LoadingComponents from '../../../app/layout/LoadingComponents';
 import { Activity } from '../../../models/activity';
+import { useStore } from '../../../stores/store';
 import ActivtyDetails from '../details/ActivityDetails';
 import ActivityForm from '../forms/ActivityForm';
 import ActivityList from './ActivityList';
 
-interface Props {
-    activities: Activity[];
-    selectedActivity: Activity | undefined;
-    selectActivity: (id: string ) => void;
-    cancelSelectActivity: () => void;
-    editMode: boolean;
-    openForm: (id: string) => void;
-    closeForm: () => void
-}
 
-const ActivityDashboard : React.FC<Props> = ({activities, selectActivity, 
-    selectedActivity, cancelSelectActivity, editMode, openForm, closeForm}) => {
+const ActivityDashboard : React.FC = () => {
+
+    const {activityStore} = useStore()
+
+    const {selectedActivity, editMode} = activityStore;
+
 
     return (
         <Grid>
             <Grid.Column width='10'>
-                <ActivityList activities={activities} selectActivity={selectActivity} />
+                <ActivityList />
             </Grid.Column>
             <Grid.Column width='6'>
                 {   selectedActivity &&  !editMode &&
-                    <ActivtyDetails activity={selectedActivity} 
-                        cancelSelectedActivity={cancelSelectActivity}
-                        openForm={openForm} /> 
+
+                    <ActivtyDetails /> 
                 }
                 {
                     editMode && 
-                    <ActivityForm closeForm={closeForm} activity={selectedActivity} />
+                    <ActivityForm />
 
                 }
             </Grid.Column>
@@ -40,4 +37,4 @@ const ActivityDashboard : React.FC<Props> = ({activities, selectActivity,
 
 }
 
-export default ActivityDashboard;
+export default observer(ActivityDashboard);
