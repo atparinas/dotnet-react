@@ -1,34 +1,39 @@
-import axios from 'axios';
-import { observer } from 'mobx-react-lite';
-import React, { useEffect, useState } from 'react';
-import { Button, Container, Header, List } from 'semantic-ui-react';
+import { Route, useLocation } from 'react-router';
+import { Container} from 'semantic-ui-react';
 import ActivityDashboard from '../../features/Activities/Dashboard/ActivityDashboard';
-import { Activity } from '../../models/activity';
-import { useStore } from '../../stores/store';
-import agent from '../api/agent';
-import LoadingComponents from './LoadingComponents';
+import ActivtyDetails from '../../features/Activities/details/ActivityDetails';
+import ActivityForm from '../../features/Activities/forms/ActivityForm';
+import HomePage from '../../features/home/HomePage';
 import NavBar from './NavBar';
 import './styles.css';
 
 function App() {
 
-    const {activityStore} = useStore()
-
-    useEffect(() => {
-        activityStore.loadActivities();
-    }, []);
-
-
-    if(activityStore.loadingInitial) return <LoadingComponents content="Loading Application ..." />
+    const location = useLocation();
 
     return (
-        <div>
-            <NavBar />
-            <Container style={{marginTop: '5em'}}>
-                <ActivityDashboard />
-            </Container>
-        </div>
+        <>
+            <Route exact path="/" component={HomePage} />
+            <Route path={'/(.+)'} 
+                render={() => (
+                    <>
+                        <NavBar />
+                        <Container style={{marginTop: '5em'}}>
+                            
+                            <Route exact path="/activities" component={ActivityDashboard} />
+                            <Route path="/activities/:id" component={ActivtyDetails} />
+                            <Route key={location.key}
+                                path={["/create-activities", "/edit-activities/:id"]} 
+                                component={ActivityForm} />
+
+                        </Container>
+                    </>
+                )}
+            
+            />
+            
+        </>
     );
 }
 
-export default observer(App);
+export default App;

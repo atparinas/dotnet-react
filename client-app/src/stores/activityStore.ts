@@ -1,7 +1,6 @@
-import { action, makeAutoObservable, makeObservable, observable, runInAction } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../app/api/agent";
 import { Activity } from "../models/activity";
-import { v4 as uuid } from 'uuid';
 
 class ActivityStore {
     
@@ -16,15 +15,19 @@ class ActivityStore {
     }
 
     loadActivities = async () => {
-        // this.setLoadingInitial(true);
+        this.setLoadingInitial(true);
 
         try {
             const activities = await agent.Activities.list();
-
+        
             activities.forEach(activity => {
                 activity.date = activity.date.split('T')[0];
-                this.activities.push(activity);
             });
+
+            runInAction(() => {
+
+                this.activities = activities
+            })
             
             this.setLoadingInitial(false);
 
@@ -34,6 +37,27 @@ class ActivityStore {
             this.setLoadingInitial(false);
         }
 
+    }
+
+
+    loadActivity = async (id: string) => {
+        this.setLoadingInitial(true)
+
+        try {
+            
+            const activity = await agent.Activities.details(id);
+            activity.date = activity.date.split('T')[0];
+
+            this.selectedActivity = activity
+
+            this.setLoadingInitial(false);
+
+            return activity;
+
+        } catch (error) {
+            console.log(error)
+            this.setLoadingInitial(false)
+        }
     }
 
     setLoadingInitial = (state: boolean) => {
@@ -61,7 +85,6 @@ class ActivityStore {
     createActivity = async (activity: Activity) => {
 
         this.loading = true;
-        activity.id = uuid();
 
         try {
             
