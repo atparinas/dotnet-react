@@ -5,7 +5,6 @@ import ActivtyDetails from '../../features/Activities/details/ActivityDetails';
 import ActivityForm from '../../features/Activities/forms/ActivityForm';
 import HomePage from '../../features/home/HomePage';
 import NavBar from './NavBar';
-import './styles.css';
 
 function App() {
 
