@@ -6,7 +6,7 @@ const HomePage : React.FC = () => {
 
     return (
         <Segment inverted textAlign='center' vertical className='masthead'>
-            <Container text>
+            <Container>
                 <Header as='h1' inverted >
                     <Image size='massive' src='/assets/logo.png' alt='logo' style={{marginBottom: 12}} />
                     Reactivities
@@ -17,10 +17,6 @@ const HomePage : React.FC = () => {
                 </Button>
             </Container>
         </Segment>
-        // <Container style={{marginTop: '5em'}}>
-        //     <h1>Home Page</h1>
-        //     <h3>Go To <Link to='/activities'>Activities</Link> </h3>
-        // </Container>
     )
 }
 
