@@ -1,7 +1,47 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, {AxiosError, AxiosResponse} from 'axios';
 import { Activity } from '../../models/activity';
+import {toast} from "react-toastify";
+import {history} from "../../index";
+import {store} from "../../stores/store";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
+
+axios.interceptors.response.use(async response => {
+    console.log('On Fulfill');
+    return response;
+}, (error: AxiosError) => {
+
+    const response = error.response;
+
+    switch (response?.status) {
+        case 400:
+            if (response?.data.errors){
+                const modalStateErrors = [];
+                for(const key in response.data.errors){
+                    if(response.data.errors[key]){
+                        modalStateErrors.push(response.data.errors[key])
+                    }
+                }
+
+                throw modalStateErrors.flat();
+            }else {
+                toast.error(response?.data);
+            }
+            break;
+        case 401:
+            toast.error('Unautorized');
+            break;
+        case 404:
+            history.push('/not-found')
+            break;
+        case 500:
+            store.commonStore.setServerError(response?.data)
+            history.push('/server-error')
+            break;
+    }
+
+    return Promise.reject(error)
+})
 
 const responseBody = <T> (response: AxiosResponse<T>) => response.data;
 

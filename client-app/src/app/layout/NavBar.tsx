@@ -15,6 +15,7 @@ const NavBar : React.FunctionComponent = () => {
                 </Menu.Item>
                 <Menu.Item as={NavLink} to='/activities' exact name="Activities" />
                 <Menu.Item as={NavLink} to='/create-activities' name='Create Activities' />
+                <Menu.Item as={NavLink} to='/errors' name='Errors' />
             </Container>
         </Menu>
     )
