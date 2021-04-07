@@ -13,7 +13,7 @@ const ActivityList : React.FC = () => {
 
 
     const activityList = activities.map((activity) => {
-        return <ActivityListItem activity={activity} />
+        return <ActivityListItem key={activity.id} activity={activity} />
     })
 
     return (
