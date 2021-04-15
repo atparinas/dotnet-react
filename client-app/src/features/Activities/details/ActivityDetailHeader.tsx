@@ -3,6 +3,7 @@ import {Button, Header, Image, Item, Segment} from "semantic-ui-react";
 import {Activity} from "../../../models/activity";
 import {observer} from "mobx-react-lite";
 import {Link} from "react-router-dom";
+import {format} from 'date-fns'
 
 const activityImageStyle = {
     filter: 'brightness(30%)'
@@ -35,7 +36,7 @@ const ActivityDetailHeader : React.FC<Props> = ({activity}) => {
                                     content={activity.title}
                                     style={{color: 'white'}}
                                 />
-                                <p>{activity.date}</p>
+                                <p>{format(activity.date!, 'dd MMM yyyy')}</p>
                                 <p>
                                     Hosted by <strong>Bob</strong>
                                 </p>

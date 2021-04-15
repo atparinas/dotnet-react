@@ -21,7 +21,8 @@ class ActivityStore {
             const activities = await agent.Activities.list();
         
             activities.forEach(activity => {
-                activity.date = activity.date.split('T')[0];
+                // activity.date = activity.date.split('T')[0];
+                activity.date = new Date(activity.date!);
             });
 
             runInAction(() => {
@@ -46,7 +47,8 @@ class ActivityStore {
         try {
             
             const activity = await agent.Activities.details(id);
-            activity.date = activity.date.split('T')[0];
+            // activity.date = activity.date.split('T')[0];
+            activity.date = new Date(activity.date!);
 
             this.selectedActivity = activity
 

@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import {Button, FormField, Label, Segment} from 'semantic-ui-react';
+import {Button, FormField, Header, Label, Segment} from 'semantic-ui-react';
 import LoadingComponents from '../../../app/layout/LoadingComponents';
 import { useStore } from '../../../stores/store';
 import { v4 as uuid } from 'uuid';
@@ -13,6 +13,7 @@ import MyTextArea from "../../../app/common/form/MyTextArea";
 import MySelectInput from "../../../app/common/form/MySelectInput";
 import {categoryOptions} from "../../../app/common/options/categoryOptions";
 import MyDateInput from "../../../app/common/form/MyDateInput";
+import {Activity} from "../../../models/activity";
 
 
 const ActivityForm : React.FC = () => {
@@ -24,12 +25,12 @@ const ActivityForm : React.FC = () => {
     const {id} = useParams<{id: string}>()
     const history = useHistory();
 
-    const [activity, setActivity] = useState({
+    const [activity, setActivity] = useState<Activity>({
         id: '',
         title: '',
         category: '',
         description: '',
-        date: '',
+        date: null,
         city: '',
         venue: ''
     })
@@ -38,7 +39,7 @@ const ActivityForm : React.FC = () => {
         title: Yup.string().required('Activity Title is required'),
         description: Yup.string().required('Activity Title is required'),
         category: Yup.string().required(),
-        date: Yup.string().required(),
+        date: Yup.string().required('Date is required').nullable(),
         venue: Yup.string().required(),
         city: Yup.string().required()
     })
@@ -48,22 +49,22 @@ const ActivityForm : React.FC = () => {
     }, [id, loadActivity])
 
 
-    // const handleSubmit = () => {
-    //     // activity.id ? updateActivity(activity) : createActivity(activity);
-    //     if(activity.id.length === 0){
-    //
-    //         const newActivity = {
-    //             ...activity,
-    //             id: uuid()
-    //         }
-    //
-    //         createActivity(newActivity).then(() => history.push(`/activities/${newActivity.id}`))
-    //
-    //     }else {
-    //
-    //         updateActivity(activity).then(() => history.push(`/activities/${activity.id}`))
-    //     }
-    // }
+    const handleFormSubmit = (activity: Activity) => {
+        // activity.id ? updateActivity(activity) : createActivity(activity);
+        if(activity.id.length === 0){
+
+            const newActivity = {
+                ...activity,
+                id: uuid()
+            }
+
+            createActivity(newActivity).then(() => history.push(`/activities/${newActivity.id}`))
+
+        }else {
+
+            updateActivity(activity).then(() => history.push(`/activities/${activity.id}`))
+        }
+    }
     //
     // const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     //     const {name, value} = event.target;
@@ -75,13 +76,14 @@ const ActivityForm : React.FC = () => {
 
     return (
         <Segment clearing>
+            <Header content='Activity Details' sub color='teal' />
             <Formik
                 validationSchema={validationSchema}
                 enableReinitialize
                 initialValues={activity}
-                onSubmit={values => console.log(values)}>
+                onSubmit={values => handleFormSubmit(values)}>
 
-                {({handleSubmit}) => (
+                {({handleSubmit, isValid, isSubmitting, dirty}) => (
                     <Form className='ui form' onSubmit={handleSubmit} autoComplete='off' >
                         <MyTextInput placeholder='Title' name='title' />
 
@@ -94,11 +96,12 @@ const ActivityForm : React.FC = () => {
                                      timeCaption='Time'
                                      dateFormat='MMMM d, yyyy h:mm aa' />
 
+                        <Header content='Location Details' sub color='teal' />
                         <MyTextInput name='city' placeholder='City' />
-
                         <MyTextInput name='venue' placeholder='Venue' />
 
                         <Button
+                            disabled={isSubmitting || !dirty || !isValid}
                             loading={loading}
                             floated='right' positive type='submit' content='Submit' />
                         <Button
